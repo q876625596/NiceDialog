@@ -3,6 +3,7 @@ package com.othershe.nicedialog;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 public class NiceDialog extends BaseNiceDialog {
     private ViewConvertListener convertListener;
@@ -37,9 +38,10 @@ public class NiceDialog extends BaseNiceDialog {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
+       /* if (savedInstanceState != null) {
+            Log.e("ly","onCreate");
             convertListener = (ViewConvertListener) savedInstanceState.getSerializable("listener");
-        }
+        }*/
     }
 
     /**
@@ -50,6 +52,7 @@ public class NiceDialog extends BaseNiceDialog {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("listener", convertListener);
+        //Log.e("ly","onSaveInstanceState");
+        //outState.putSerializable("listener", convertListener);
     }
 }
