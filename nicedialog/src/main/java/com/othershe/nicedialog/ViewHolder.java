@@ -2,6 +2,8 @@ package com.othershe.nicedialog;
 
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ViewHolder {
@@ -31,33 +33,51 @@ public class ViewHolder {
         return convertView;
     }
 
-    public void setText(int viewId, String text) {
+    public ViewHolder setText(int viewId, String text) {
         TextView textView = getView(viewId);
         textView.setText(text);
+        return this;
     }
 
-    public void setText(int viewId, int textId) {
+    public ViewHolder setText(int viewId, int textId) {
         TextView textView = getView(viewId);
         textView.setText(textId);
+        return this;
     }
 
-    public void setTextColor(int viewId, int colorId) {
+    public ViewHolder setTextColor(int viewId, int colorId) {
         TextView textView = getView(viewId);
         textView.setTextColor(colorId);
+        return this;
     }
 
-    public void setOnClickListener(int viewId, View.OnClickListener clickListener) {
+    public ViewHolder setImageResource(int viewId, int imageRes) {
+        ImageView imageView = getView(viewId);
+        imageView.setImageResource(imageRes);
+        return this;
+    }
+
+    public ViewHolder setChecked(int viewId, boolean isChecked) {
+        CheckBox checkBox = getView(viewId);
+        checkBox.setChecked(isChecked);
+        return this;
+    }
+
+    public ViewHolder setOnClickListener(int viewId, View.OnClickListener clickListener) {
         View view = getView(viewId);
         view.setOnClickListener(clickListener);
+        return this;
     }
 
-    public void setBackgroundResource(int viewId, int resId) {
+    public ViewHolder setBackgroundResource(int viewId, int resId) {
         View view = getView(viewId);
         view.setBackgroundResource(resId);
+        return this;
     }
 
-    public void setBackgroundColor(int viewId, int colorId) {
+    public ViewHolder setBackgroundColor(int viewId, int colorId) {
         View view = getView(viewId);
         view.setBackgroundColor(colorId);
+        return this;
     }
 }
