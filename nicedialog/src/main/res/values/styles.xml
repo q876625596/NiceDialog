@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="NiceDialog" parent="@android:style/Theme.Dialog">
+    <style name="NiceDialog" parent="@style/AlertDialog.AppCompat.Light">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
