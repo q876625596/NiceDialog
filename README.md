@@ -20,7 +20,7 @@ allprojects {
     }
 }
 ```
-**Step 2. 添加项目依赖**
+**Step 2. 添加项目依赖,我fork之后修改的最新版本复制q876625596/NiceDialog在jitpack.io上查看**
 ``` gradle
 dependencies {
         compile 'com.github.Othershe:NiceDialog:1.1.1'
