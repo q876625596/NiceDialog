@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
                 .setLayoutId(R.layout.share_layout)
                 .setConvertListener(new ViewConvertListener() {
                     @Override
-                    public void convertView(ViewHolder holder, final BaseNiceDialog dialog) {
+                    public void convertView(ViewHolder holder, BaseNiceDialog dialog) {
                         holder.setOnClickListener(R.id.wechat, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

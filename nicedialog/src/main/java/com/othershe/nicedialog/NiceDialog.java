@@ -38,10 +38,10 @@ public class NiceDialog extends BaseNiceDialog {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       /* if (savedInstanceState != null) {
+        if (savedInstanceState != null) {
             Log.e("ly","onCreate");
-            convertListener = (ViewConvertListener) savedInstanceState.getSerializable("listener");
-        }*/
+            convertListener = (ViewConvertListener) savedInstanceState.getParcelable("listener");
+        }
     }
 
     /**
@@ -51,8 +51,8 @@ public class NiceDialog extends BaseNiceDialog {
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable("listener", convertListener);
         super.onSaveInstanceState(outState);
         //Log.e("ly","onSaveInstanceState");
-        //outState.putSerializable("listener", convertListener);
     }
 }
