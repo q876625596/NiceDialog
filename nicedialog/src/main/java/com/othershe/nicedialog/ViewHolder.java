@@ -69,6 +69,12 @@ public class ViewHolder {
         return this;
     }
 
+    public ViewHolder setOnLongClickListener(int viewId, View.OnLongClickListener clickListener) {
+        View view = getView(viewId);
+        view.setOnLongClickListener(clickListener);
+        return this;
+    }
+
     public ViewHolder setBackgroundResource(int viewId, int resId) {
         View view = getView(viewId);
         view.setBackgroundResource(resId);
