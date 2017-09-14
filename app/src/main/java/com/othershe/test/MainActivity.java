@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setDimAmount(0.3f)
                 .setShowBottom(true)
+                .setAnimStyle(com.othershe.nicedialog.R.style.AlphaEnterExitAnimation)
                 .show(getSupportFragmentManager());
     }
 
@@ -101,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
                 .setLayoutId(R.layout.loading_layout)
                 .setWidth(100)
                 .setHeight(100)
-                .setDimAmount(0)
+                .setAnimStyle(R.style.AlphaEnterExitAnimation)
+                .setDimAmount(0.2f)
                 .show(getSupportFragmentManager());
     }
 

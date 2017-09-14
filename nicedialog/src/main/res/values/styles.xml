@@ -13,4 +13,19 @@
         <item name="android:windowEnterAnimation">@anim/enter_anim</item>
         <item name="android:windowExitAnimation">@anim/exit_anim</item>
     </style>
+
+    <style name="AlphaEnterExitAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/alpha_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/alpha_exit_anim</item>
+    </style>
+
+    <style name="ScaleEnterExitAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/scale_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/scale_exit_anim</item>
+    </style>
+
+    <style name="ScaleAlphaEnterExitAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/scale_alpha_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/scale_alpha_exit_anim</item>
+    </style>
 </resources>
