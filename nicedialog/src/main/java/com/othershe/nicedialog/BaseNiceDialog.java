@@ -182,7 +182,7 @@ public abstract class BaseNiceDialog extends DialogFragment {
         dialogInterface = dialogListener;
     }
 
-    interface DialogInterface {
+    public interface DialogInterface {
         void onDialogShow();
 
         void onDialogDismiss();
