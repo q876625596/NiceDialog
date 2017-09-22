@@ -35,6 +35,8 @@ public abstract class BaseNiceDialog extends DialogFragment {
     @LayoutRes
     protected int layoutId;
 
+    private DialogInterface dialogInterface;
+
     public abstract int intLayoutId();
 
     public abstract void convertView(ViewHolder holder, BaseNiceDialog dialog);
@@ -44,6 +46,7 @@ public abstract class BaseNiceDialog extends DialogFragment {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.NiceDialog);
         layoutId = intLayoutId();
+
 
         //恢复保存的数据
         if (savedInstanceState != null) {
@@ -161,6 +164,27 @@ public abstract class BaseNiceDialog extends DialogFragment {
 
     public BaseNiceDialog show(FragmentManager manager) {
         super.show(manager, String.valueOf(System.currentTimeMillis()));
+        if (dialogInterface != null) {
+            dialogInterface.onDialogShow();
+        }
         return this;
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (dialogInterface != null) {
+            dialogInterface.onDialogDismiss();
+        }
+    }
+
+    public void setOnDialogListener(DialogInterface dialogListener) {
+        dialogInterface = dialogListener;
+    }
+
+    interface DialogInterface {
+        void onDialogShow();
+
+        void onDialogDismiss();
     }
 }
