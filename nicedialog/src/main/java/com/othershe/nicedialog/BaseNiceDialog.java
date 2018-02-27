@@ -235,8 +235,9 @@ public abstract class BaseNiceDialog extends DialogFragment {
         getDialog().setCanceledOnTouchOutside(touchCancel);
     }
 
-    public void setOnDialogListener(DialogInterface dialogListener) {
+    public BaseNiceDialog setOnDialogListener(DialogInterface dialogListener) {
         dialogInterface = dialogListener;
+        return this;
     }
 
     public abstract static class DialogInterface implements Parcelable {
