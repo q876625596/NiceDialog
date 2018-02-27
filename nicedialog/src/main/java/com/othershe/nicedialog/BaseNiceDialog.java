@@ -1,6 +1,8 @@
 package com.othershe.nicedialog;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
@@ -24,6 +26,8 @@ public abstract class BaseNiceDialog extends DialogFragment {
     private static final String TOUCH_CANCEL = "touch_cancel";
     private static final String ANIM = "anim_style";
     private static final String LAYOUT = "layout_id";
+    private static final String DIALOG_INTERFACE = "dialog_interface";
+    private static final String KEY_LISTENER = "key_listener";
 
     private int margin;//左右边距
     private int width;//宽度
@@ -32,13 +36,18 @@ public abstract class BaseNiceDialog extends DialogFragment {
     private boolean showBottom;//是否底部显示
     private boolean outCancel = true;//是否点击外部取消（包含返回按钮）
     private boolean touchCancel = true;//是否点击屏幕区域取消（不包含返回按钮）
+    private boolean enableDialogInterface = true;//设置是否需要触发监听（可用于屏幕旋转时dialog被动取消时）
     
     @StyleRes
     private int animStyle;
     @LayoutRes
     protected int layoutId;
 
+    //显示与消失的监听
     private DialogInterface dialogInterface;
+    
+    //按钮监听
+    private OnKeyListener onKeyListener;
 
     public abstract int intLayoutId();
 
@@ -62,6 +71,8 @@ public abstract class BaseNiceDialog extends DialogFragment {
             touchCancel = savedInstanceState.getBoolean(TOUCH_CANCEL);
             animStyle = savedInstanceState.getInt(ANIM);
             layoutId = savedInstanceState.getInt(LAYOUT);
+            dialogInterface = savedInstanceState.getParcelable(DIALOG_INTERFACE);
+            onKeyListener = savedInstanceState.getParcelable(KEY_LISTENER);
         }
     }
 
@@ -82,7 +93,9 @@ public abstract class BaseNiceDialog extends DialogFragment {
     @Override
     public void onStop() {
         if (dialogInterface != null) {
-            dialogInterface.onDialogDismiss();
+           if (enableDialogInterface) {
+                dialogInterface.onDialogDismiss();
+            }
         }
         super.onStop();
     }
@@ -104,6 +117,8 @@ public abstract class BaseNiceDialog extends DialogFragment {
         outState.putBoolean(TOUCH_CANCEL, touchCancel);
         outState.putInt(ANIM, animStyle);
         outState.putInt(LAYOUT, layoutId);
+        outState.putParcelable(DIALOG_INTERFACE, dialogInterface);
+        outState.putParcelable(KEY_LISTENER, onKeyListener);
     }
 
     private void initParams() {
@@ -175,6 +190,20 @@ public abstract class BaseNiceDialog extends DialogFragment {
         this.touchCancel = touchCancel;
         return this;
     }
+    
+    public void setEnableDialogInterface(boolean enableDialogInterface) {
+        this.enableDialogInterface = enableDialogInterface;
+    }
+    
+    // *******
+    // 在调用show()之后，
+    // 再执行getSupportFragmentManager().executePendingTransactions()方法
+    // 才能调用此方法
+    public BaseNiceDialog setOnKeyEventListener(OnKeyListener listener) {
+        onKeyListener = listener;
+        getDialog().setOnKeyListener(listener);
+        return this;
+    }
 
     public BaseNiceDialog setAnimStyle(@StyleRes int animStyle) {
         this.animStyle = animStyle;
@@ -184,7 +213,9 @@ public abstract class BaseNiceDialog extends DialogFragment {
     public BaseNiceDialog show(FragmentManager manager) {
         super.show(manager, String.valueOf(System.currentTimeMillis()));
         if (dialogInterface != null) {
-            dialogInterface.onDialogShow();
+            if (enableDialogInterface){
+                dialogInterface.onDialogShow();
+            }
         }
         return this;
     }
@@ -193,7 +224,9 @@ public abstract class BaseNiceDialog extends DialogFragment {
     public void dismiss() {
         super.dismiss();
         if (dialogInterface != null) {
-            dialogInterface.onDialogDismiss();
+            if (enableDialogInterface) {
+                dialogInterface.onDialogDismiss();
+            }
         }
     }
     
@@ -206,9 +239,81 @@ public abstract class BaseNiceDialog extends DialogFragment {
         dialogInterface = dialogListener;
     }
 
-    public interface DialogInterface {
-        void onDialogShow();
+    public abstract static class DialogInterface implements Parcelable {
 
-        void onDialogDismiss();
+        abstract public void onDialogShow();
+
+        abstract public void onDialogDismiss();
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+        }
+
+        public DialogInterface() {
+        }
+
+        protected DialogInterface(Parcel in) {
+        }
+
+        public final Creator<DialogInterface> CREATOR = new Creator<DialogInterface>() {
+            @Override
+            public DialogInterface createFromParcel(Parcel source) {
+                return new DialogInterface(source) {
+                    @Override
+                    public void onDialogShow() {
+
+                    }
+
+                    @Override
+                    public void onDialogDismiss() {
+
+                    }
+                };
+            }
+
+            @Override
+            public DialogInterface[] newArray(int size) {
+                return new DialogInterface[size];
+            }
+        };
+    }
+    public static abstract class OnKeyListener implements android.content.DialogInterface.OnKeyListener,Parcelable{
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+        }
+
+        public OnKeyListener() {
+        }
+
+        protected OnKeyListener(Parcel in) {
+        }
+
+        public final Creator<OnKeyListener> CREATOR = new Creator<OnKeyListener>() {
+            @Override
+            public OnKeyListener createFromParcel(Parcel source) {
+                return new OnKeyListener(source){
+                    @Override
+                    public boolean onKey(android.content.DialogInterface dialog, int keyCode, KeyEvent event) {
+                        return false;
+                    }
+                };
+            }
+
+            @Override
+            public OnKeyListener[] newArray(int size) {
+                return new OnKeyListener[size];
+            }
+        };
     }
 }
