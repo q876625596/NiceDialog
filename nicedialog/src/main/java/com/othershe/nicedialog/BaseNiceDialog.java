@@ -20,7 +20,8 @@ public abstract class BaseNiceDialog extends DialogFragment {
     private static final String HEIGHT = "height";
     private static final String DIM = "dim_amount";
     private static final String BOTTOM = "show_bottom";
-    private static final String CANCEL = "out_cancel";
+    private static final String OUT_CANCEL = "out_cancel";
+    private static final String TOUCH_CANCEL = "touch_cancel";
     private static final String ANIM = "anim_style";
     private static final String LAYOUT = "layout_id";
 
@@ -29,7 +30,9 @@ public abstract class BaseNiceDialog extends DialogFragment {
     private int height;//高度
     private float dimAmount = 0.5f;//灰度深浅
     private boolean showBottom;//是否底部显示
-    private boolean outCancel = true;//是否点击外部取消
+    private boolean outCancel = true;//是否点击外部取消（包含返回按钮）
+    private boolean touchCancel = true;//是否点击屏幕区域取消（不包含返回按钮）
+    
     @StyleRes
     private int animStyle;
     @LayoutRes
@@ -55,7 +58,8 @@ public abstract class BaseNiceDialog extends DialogFragment {
             height = savedInstanceState.getInt(HEIGHT);
             dimAmount = savedInstanceState.getFloat(DIM);
             showBottom = savedInstanceState.getBoolean(BOTTOM);
-            outCancel = savedInstanceState.getBoolean(CANCEL);
+            outCancel = savedInstanceState.getBoolean(OUT_CANCEL);
+            touchCancel = savedInstanceState.getBoolean(TOUCH_CANCEL);
             animStyle = savedInstanceState.getInt(ANIM);
             layoutId = savedInstanceState.getInt(LAYOUT);
         }
@@ -96,7 +100,8 @@ public abstract class BaseNiceDialog extends DialogFragment {
         outState.putInt(HEIGHT, height);
         outState.putFloat(DIM, dimAmount);
         outState.putBoolean(BOTTOM, showBottom);
-        outState.putBoolean(CANCEL, outCancel);
+        outState.putBoolean(OUT_CANCEL, outCancel);
+        outState.putBoolean(TOUCH_CANCEL, touchCancel);
         outState.putInt(ANIM, animStyle);
         outState.putInt(LAYOUT, layoutId);
     }
@@ -133,6 +138,7 @@ public abstract class BaseNiceDialog extends DialogFragment {
             window.setAttributes(lp);
         }
         setCancelable(outCancel);
+        setTouchOutSideCancelable(touchCancel);
     }
 
     public BaseNiceDialog setMargin(int margin) {
@@ -164,6 +170,11 @@ public abstract class BaseNiceDialog extends DialogFragment {
         this.outCancel = outCancel;
         return this;
     }
+    
+    public BaseNiceDialog setTouchCancel(boolean touchCancel) {
+        this.touchCancel = touchCancel;
+        return this;
+    }
 
     public BaseNiceDialog setAnimStyle(@StyleRes int animStyle) {
         this.animStyle = animStyle;
@@ -184,6 +195,11 @@ public abstract class BaseNiceDialog extends DialogFragment {
         if (dialogInterface != null) {
             dialogInterface.onDialogDismiss();
         }
+    }
+    
+    public void setTouchOutSideCancelable(boolean touchCancel){
+        this.touchCancel = touchCancel;
+        getDialog().setCanceledOnTouchOutside(touchCancel);
     }
 
     public void setOnDialogListener(DialogInterface dialogListener) {
