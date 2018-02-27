@@ -74,6 +74,14 @@ public abstract class BaseNiceDialog extends DialogFragment {
         super.onStart();
         initParams();
     }
+    
+    @Override
+    public void onStop() {
+        if (dialogInterface != null) {
+            dialogInterface.onDialogDismiss();
+        }
+        super.onStop();
+    }
 
     /**
      * 屏幕旋转等导致DialogFragment销毁后重建时保存数据
