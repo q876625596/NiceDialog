@@ -30,10 +30,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showDialog0(View view) {
-        NiceDialog.init().setDialogOptions(new DialogOptions()
+        /*new DialogOptions()
                 .setLayoutId(R.layout.share_layout)
-                .setGravity(DialogGravity.CENTER_BOTTOM)
-                .setFullHorizontal(true)
+                .setWidth(50)
+                .setHeight(50)
+                */
+        NiceDialog.init().setDialogOptions(new DialogOptions()//设置options
+                .setLayoutId(R.layout.share_layout)//
+                .setGravity(DialogGravity.LEFT_BOTTOM)
+                .setWidth(80)
+                .setHorizontalMargin(0.5f)
+                .setVerticalMargin(0.5f)
                 .setConvertListener(new ViewConvertListener() {
                     @Override
                     protected void convertView(ViewHolder holder, BaseNiceDialog dialog) {
@@ -69,20 +76,50 @@ public class MainActivity extends AppCompatActivity {
                 .show(getSupportFragmentManager());
     }
 
-    /*public void showDialog1(View view) {
-        NiceDialog.init()
-                .setLayoutId(R.layout.friend_set_layout)
+    public void showDialog1(View view) {
+        NiceDialog.init().setDialogOptions(new DialogOptions()//设置options
+                .setLayoutId(R.layout.share_layout)//
+                .setGravity(DialogGravity.CENTER_CENTER)
+                .setWidth(80)
+                .setFullVertical(true)
+                .setFullHorizontal(true)
+                .setFullHorizontalMargin(10)
+                .setFullVerticalMargin(30)
                 .setConvertListener(new ViewConvertListener() {
                     @Override
-                    public void convertView(ViewHolder holder, final BaseNiceDialog dialog) {
-
+                    protected void convertView(ViewHolder holder, BaseNiceDialog dialog) {
+                        holder.setOnClickListener(R.id.wechat, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "分享成功", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 })
-                .setShowBottom(true)
-                .setHeight(310)
+                .setDialogInterface(new DialogInterface() {
+                    @Override
+                    public void onDialogShow() {
+                        Log.e("ly", "show");
+                    }
+
+                    @Override
+                    public void onDialogDismiss() {
+                        Log.e("ly", "dismiss");
+                    }
+                })
+                .setOnKeyListener(new OnKeyListener() {
+                    @Override
+                    public boolean onKey(android.content.DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            Toast.makeText(MainActivity.this, "back", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                        return false;
+                    }
+                }))
                 .show(getSupportFragmentManager());
     }
-
+/*
     public void showDialog2(View view) {
         NiceDialog.init()
                 .setLayoutId(R.layout.commit_layout)

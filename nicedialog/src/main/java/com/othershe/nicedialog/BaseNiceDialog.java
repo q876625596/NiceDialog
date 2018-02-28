@@ -83,7 +83,7 @@ public abstract class BaseNiceDialog extends DialogFragment {
         Window window = getDialog().getWindow();
         if (window != null) {
             WindowManager.LayoutParams lp = window.getAttributes();
-            //调节灰色背景透明度[0-1]，默认0.5f
+            //调节灰色背景透明度[0-1]，默认0.3f
             lp.dimAmount = dialogOptions.getDimAmount();
             //设置位置
             lp.gravity = dialogOptions.getGravity().getIndex();
@@ -139,9 +139,6 @@ public abstract class BaseNiceDialog extends DialogFragment {
                     dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
                             ? R.style.AlphaEnterExitAnimation : dialogOptions.getAnimStyle());
             }
-            //设置边距
-            lp.horizontalMargin = dialogOptions.getHorizontalMargin();
-            lp.verticalMargin = dialogOptions.getVerticalMargin();
 
             //设置dialog宽度
             if (dialogOptions.getWidth() == 0) {
@@ -157,13 +154,21 @@ public abstract class BaseNiceDialog extends DialogFragment {
                 lp.height = Utils.dp2px(getContext(), dialogOptions.getHeight());
             }
 
-            //当左右占满时，设置边距
+            //当左右占满时，设置左右两边的平均边距
             if (dialogOptions.isFullHorizontal()) {
-                lp.width = Utils.getScreenWidth(getContext()) - 2 * Utils.dp2px(getContext(), dialogOptions.getHorizontalMargin());
+                lp.horizontalMargin = 0f;
+                lp.width = Utils.getScreenWidth(getContext()) - 2 * Utils.dp2px(getContext(), dialogOptions.getFullHorizontalMargin());
+            } else {
+                //没有占满的时候，设置水平方向的相对边距
+                lp.horizontalMargin = dialogOptions.getHorizontalMargin();
             }
-            //当上下占满时，设置边距
+            //当上下占满时，设置上下的平均边距
             if (dialogOptions.isFullVertical()) {
-                lp.height = Utils.getScreenHeight(getContext()) - 2 * Utils.dp2px(getContext(), dialogOptions.getVerticalMargin());
+                lp.verticalMargin = 0f;
+                lp.height = Utils.getScreenHeight(getContext()) - 2 * Utils.dp2px(getContext(), dialogOptions.getFullVerticalMargin());
+            } else {
+                //没有占满的时候，设置水平方向的相对边距
+                lp.verticalMargin = dialogOptions.getVerticalMargin();
             }
 
             //设置dialog进入、退出的动画

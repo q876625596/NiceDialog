@@ -20,10 +20,24 @@ public class DialogOptions implements Parcelable {
     private boolean isFullHorizontal = false;
     //是否纵向占满
     private boolean isFullVertical = false;
+
+    //以下两个margin分别适用于横纵向不占满的情况
+    //并且根据gravity来判定margin的方向，
+    // 例如：当gravity为left和top的时候，
+    // 此时的verticalMargin则代表距离left的Margin
+    // 此时的horizontalMargin就代表距离top的Margin
+    // 取值范围为0-1，代表相对于屏幕的百分比（屏幕宽高*margin取值范围）
     //上下边距
     private float verticalMargin = 0f;
     //左右边距
     private float horizontalMargin = 0f;
+
+    //以下两个margin分别用于横纵向占满的情况
+    //垂直方向上顶部和底部的margin
+    private int fullVerticalMargin = 0;
+
+    //水平方向上左右两边的margin
+    private int fullHorizontalMargin = 0;
     //灰度深浅
     private float dimAmount = 0.3f;
     //dialog的位置（默认居中）
@@ -103,6 +117,24 @@ public class DialogOptions implements Parcelable {
 
     public DialogOptions setHorizontalMargin(float horizontalMargin) {
         this.horizontalMargin = horizontalMargin;
+        return this;
+    }
+
+    public int getFullVerticalMargin() {
+        return fullVerticalMargin;
+    }
+
+    public DialogOptions setFullVerticalMargin(int fullVerticalMargin) {
+        this.fullVerticalMargin = fullVerticalMargin;
+        return this;
+    }
+
+    public int getFullHorizontalMargin() {
+        return fullHorizontalMargin;
+    }
+
+    public DialogOptions setFullHorizontalMargin(int fullHorizontalMargin) {
+        this.fullHorizontalMargin = fullHorizontalMargin;
         return this;
     }
 
@@ -218,6 +250,8 @@ public class DialogOptions implements Parcelable {
         dest.writeByte(this.isFullVertical ? (byte) 1 : (byte) 0);
         dest.writeFloat(this.verticalMargin);
         dest.writeFloat(this.horizontalMargin);
+        dest.writeInt(this.fullVerticalMargin);
+        dest.writeInt(this.fullHorizontalMargin);
         dest.writeFloat(this.dimAmount);
         dest.writeInt(this.gravity == null ? -1 : this.gravity.ordinal());
         dest.writeByte(this.outCancel ? (byte) 1 : (byte) 0);
@@ -241,6 +275,8 @@ public class DialogOptions implements Parcelable {
         this.isFullVertical = in.readByte() != 0;
         this.verticalMargin = in.readFloat();
         this.horizontalMargin = in.readFloat();
+        this.fullVerticalMargin = in.readInt();
+        this.fullHorizontalMargin = in.readInt();
         this.dimAmount = in.readFloat();
         int tmpGravity = in.readInt();
         this.gravity = tmpGravity == -1 ? null : DialogGravity.values()[tmpGravity];
