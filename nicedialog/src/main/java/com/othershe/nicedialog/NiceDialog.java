@@ -6,53 +6,15 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 public class NiceDialog extends BaseNiceDialog {
-    private ViewConvertListener convertListener;
 
     public static NiceDialog init() {
         return new NiceDialog();
     }
 
     @Override
-    public int intLayoutId() {
-        return layoutId;
-    }
-
-    @Override
     public void convertView(ViewHolder holder, BaseNiceDialog dialog) {
-        if (convertListener != null) {
-            convertListener.convertView(holder, dialog);
+        if (getDialogOptions().getConvertListener() != null) {
+            getDialogOptions().getConvertListener().convertView(holder, dialog);
         }
-    }
-
-
-    public NiceDialog setLayoutId(@LayoutRes int layoutId) {
-        this.layoutId = layoutId;
-        return this;
-    }
-
-    public NiceDialog setConvertListener(ViewConvertListener convertListener) {
-        this.convertListener = convertListener;
-        return this;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            Log.e("ly","onCreate");
-            convertListener = (ViewConvertListener) savedInstanceState.getParcelable("listener");
-        }
-    }
-
-    /**
-     * 保存接口
-     *
-     * @param outState
-     */
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable("listener", convertListener);
-        super.onSaveInstanceState(outState);
-        //Log.e("ly","onSaveInstanceState");
     }
 }

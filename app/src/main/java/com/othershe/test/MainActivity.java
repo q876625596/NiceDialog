@@ -4,13 +4,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.othershe.nicedialog.BaseNiceDialog;
+import com.othershe.nicedialog.DialogGravity;
+import com.othershe.nicedialog.DialogInterface;
+import com.othershe.nicedialog.DialogOptions;
 import com.othershe.nicedialog.NiceDialog;
+import com.othershe.nicedialog.OnKeyListener;
 import com.othershe.nicedialog.ViewConvertListener;
 import com.othershe.nicedialog.ViewHolder;
 
@@ -23,11 +30,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showDialog0(View view) {
-        NiceDialog.init()
+        NiceDialog.init().setDialogOptions(new DialogOptions()
                 .setLayoutId(R.layout.share_layout)
+                .setGravity(DialogGravity.CENTER_BOTTOM)
+                .setFullHorizontal(true)
                 .setConvertListener(new ViewConvertListener() {
                     @Override
-                    public void convertView(ViewHolder holder, BaseNiceDialog dialog) {
+                    protected void convertView(ViewHolder holder, BaseNiceDialog dialog) {
                         holder.setOnClickListener(R.id.wechat, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -36,13 +45,31 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                 })
-                .setDimAmount(0.3f)
-                .setShowBottom(true)
-                .setAnimStyle(com.othershe.nicedialog.R.style.AlphaEnterExitAnimation)
+                .setDialogInterface(new DialogInterface() {
+                    @Override
+                    public void onDialogShow() {
+                        Log.e("ly", "show");
+                    }
+
+                    @Override
+                    public void onDialogDismiss() {
+                        Log.e("ly", "dismiss");
+                    }
+                })
+                .setOnKeyListener(new OnKeyListener() {
+                    @Override
+                    public boolean onKey(android.content.DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            Toast.makeText(MainActivity.this, "back", Toast.LENGTH_SHORT).show();
+                            return true;
+                        }
+                        return false;
+                    }
+                }))
                 .show(getSupportFragmentManager());
     }
 
-    public void showDialog1(View view) {
+    /*public void showDialog1(View view) {
         NiceDialog.init()
                 .setLayoutId(R.layout.friend_set_layout)
                 .setConvertListener(new ViewConvertListener() {
@@ -143,11 +170,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public int intLayoutId() {
-            return R.layout.confirm_layout;
-        }
-
-        @Override
         public void convertView(ViewHolder holder, final BaseNiceDialog dialog) {
             if ("1".equals(type)) {
                 holder.setText(R.id.title, "提示");
@@ -171,4 +193,5 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+    */
 }

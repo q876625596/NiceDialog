@@ -9,8 +9,8 @@
     </style>
 
     <style name="EnterExitAnimation" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/enter_anim</item>
-        <item name="android:windowExitAnimation">@anim/exit_anim</item>
+        <item name="android:windowEnterAnimation">@anim/bottom_trans_alpha_ad_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/bottom_trans_alpha_ad_exit_anim</item>
     </style>
 
     <style name="AlphaEnterExitAnimation" parent="android:Animation">

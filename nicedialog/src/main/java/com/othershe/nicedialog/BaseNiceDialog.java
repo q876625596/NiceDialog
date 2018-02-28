@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,69 +18,34 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public abstract class BaseNiceDialog extends DialogFragment {
-    private static final String MARGIN = "margin";
-    private static final String WIDTH = "width";
-    private static final String HEIGHT = "height";
-    private static final String DIM = "dim_amount";
-    private static final String BOTTOM = "show_bottom";
-    private static final String OUT_CANCEL = "out_cancel";
-    private static final String TOUCH_CANCEL = "touch_cancel";
-    private static final String ANIM = "anim_style";
-    private static final String LAYOUT = "layout_id";
-    private static final String DIALOG_INTERFACE = "dialog_interface";
-    private static final String KEY_LISTENER = "key_listener";
 
-    private int margin;//左右边距
-    private int width;//宽度
-    private int height;//高度
-    private float dimAmount = 0.5f;//灰度深浅
-    private boolean showBottom;//是否底部显示
-    private boolean outCancel = true;//是否点击外部取消（包含返回按钮）
-    private boolean touchCancel = true;//是否点击屏幕区域取消（不包含返回按钮）
-    private boolean enableDialogInterface = true;//设置是否需要触发监听（可用于屏幕旋转时dialog被动取消时）
-    
-    @StyleRes
-    private int animStyle;
-    @LayoutRes
-    protected int layoutId;
+    //保存数据的标签
+    private static final String OPTIONS = "options";
 
-    //显示与消失的监听
-    private DialogInterface dialogInterface;
-    
-    //按钮监听
-    private OnKeyListener onKeyListener;
+    //dialog配置
+    private DialogOptions dialogOptions = new DialogOptions();
 
-    public abstract int intLayoutId();
-
+    //事件监听
     public abstract void convertView(ViewHolder holder, BaseNiceDialog dialog);
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //设置dialog样式
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.NiceDialog);
-        layoutId = intLayoutId();
-
 
         //恢复保存的数据
         if (savedInstanceState != null) {
-            margin = savedInstanceState.getInt(MARGIN);
-            width = savedInstanceState.getInt(WIDTH);
-            height = savedInstanceState.getInt(HEIGHT);
-            dimAmount = savedInstanceState.getFloat(DIM);
-            showBottom = savedInstanceState.getBoolean(BOTTOM);
-            outCancel = savedInstanceState.getBoolean(OUT_CANCEL);
-            touchCancel = savedInstanceState.getBoolean(TOUCH_CANCEL);
-            animStyle = savedInstanceState.getInt(ANIM);
-            layoutId = savedInstanceState.getInt(LAYOUT);
-            dialogInterface = savedInstanceState.getParcelable(DIALOG_INTERFACE);
-            onKeyListener = savedInstanceState.getParcelable(KEY_LISTENER);
+            dialogOptions = savedInstanceState.getParcelable(OPTIONS);
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(layoutId, container, false);
+        //加载布局
+        View view = inflater.inflate(dialogOptions.getLayoutId(), container, false);
         convertView(ViewHolder.create(view), this);
         return view;
     }
@@ -87,14 +53,16 @@ public abstract class BaseNiceDialog extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
+        //初始化配置
         initParams();
     }
-    
+
     @Override
     public void onStop() {
-        if (dialogInterface != null) {
-           if (enableDialogInterface) {
-                dialogInterface.onDialogDismiss();
+        if (dialogOptions.getDialogInterface() != null) {
+            //判断是否需要调用关闭dialog的回调
+            if (dialogOptions.isEnableDialogDismissListener()) {
+                dialogOptions.getDialogInterface().onDialogDismiss();
             }
         }
         super.onStop();
@@ -108,17 +76,7 @@ public abstract class BaseNiceDialog extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(MARGIN, margin);
-        outState.putInt(WIDTH, width);
-        outState.putInt(HEIGHT, height);
-        outState.putFloat(DIM, dimAmount);
-        outState.putBoolean(BOTTOM, showBottom);
-        outState.putBoolean(OUT_CANCEL, outCancel);
-        outState.putBoolean(TOUCH_CANCEL, touchCancel);
-        outState.putInt(ANIM, animStyle);
-        outState.putInt(LAYOUT, layoutId);
-        outState.putParcelable(DIALOG_INTERFACE, dialogInterface);
-        outState.putParcelable(KEY_LISTENER, onKeyListener);
+        outState.putParcelable(OPTIONS, dialogOptions);
     }
 
     private void initParams() {
@@ -126,95 +84,118 @@ public abstract class BaseNiceDialog extends DialogFragment {
         if (window != null) {
             WindowManager.LayoutParams lp = window.getAttributes();
             //调节灰色背景透明度[0-1]，默认0.5f
-            lp.dimAmount = dimAmount;
-            //是否在底部显示
-            if (showBottom) {
-                lp.gravity = Gravity.BOTTOM;
-                if (animStyle == 0) {
-                    animStyle = R.style.DefaultAnimation;
-                }
+            lp.dimAmount = dialogOptions.getDimAmount();
+            //设置位置
+            lp.gravity = dialogOptions.getGravity().getIndex();
+            //根据dialog的位置来设置默认anim
+            switch (dialogOptions.getGravity().getIndex()) {
+                //左上(默认动画从左至右加速减速,verticalMargin和horizontalMargin生效)
+                case Gravity.START | Gravity.TOP:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.LeftTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //中上(默认动画从上至下加速减速,verticalMargin生效)
+                case Gravity.CENTER_HORIZONTAL | Gravity.TOP:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.TopTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //右上(默认动画从右至左加速减速,verticalMargin和horizontalMargin生效)
+                case Gravity.END | Gravity.TOP:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.RightTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //左中(默认动画从左至右加速减速,horizontalMargin生效)
+                case Gravity.START | Gravity.CENTER_VERTICAL:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.LeftTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //正中(默认动画有回弹的伸缩，margin无效)
+                case Gravity.CENTER:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.ScaleOverShootEnterExitAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //右中(默认动画从右至左加速减速,horizontalMargin生效)
+                case Gravity.END | Gravity.CENTER_VERTICAL:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.RightTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //左下(默认动画从左至右加速减速,verticalMargin和horizontalMargin生效)
+                case Gravity.START | Gravity.BOTTOM:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.LeftTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //中下(默认动画从下至上加速减速,verticalMargin生效)
+                case Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.BottomTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //右下(默认动画从右至左加速减速,verticalMargin和horizontalMargin生效)
+                case Gravity.END | Gravity.BOTTOM:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.RightTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    break;
+                //默认动画渐入渐出
+                default:
+                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
+                            ? R.style.AlphaEnterExitAnimation : dialogOptions.getAnimStyle());
             }
+            //设置边距
+            lp.horizontalMargin = dialogOptions.getHorizontalMargin();
+            lp.verticalMargin = dialogOptions.getVerticalMargin();
 
             //设置dialog宽度
-            if (width == 0) {
-                lp.width = Utils.getScreenWidth(getContext()) - 2 * Utils.dp2px(getContext(), margin);
+            if (dialogOptions.getWidth() == 0) {
+                lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
             } else {
-                lp.width = Utils.dp2px(getContext(), width);
+                lp.width = Utils.dp2px(getContext(), dialogOptions.getWidth());
             }
+
             //设置dialog高度
-            if (height == 0) {
+            if (dialogOptions.getHeight() == 0) {
                 lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             } else {
-                lp.height = Utils.dp2px(getContext(), height);
+                lp.height = Utils.dp2px(getContext(), dialogOptions.getHeight());
+            }
+
+            //当左右占满时，设置边距
+            if (dialogOptions.isFullHorizontal()) {
+                lp.width = Utils.getScreenWidth(getContext()) - 2 * Utils.dp2px(getContext(), dialogOptions.getHorizontalMargin());
+            }
+            //当上下占满时，设置边距
+            if (dialogOptions.isFullVertical()) {
+                lp.height = Utils.getScreenHeight(getContext()) - 2 * Utils.dp2px(getContext(), dialogOptions.getVerticalMargin());
             }
 
             //设置dialog进入、退出的动画
-            window.setWindowAnimations(animStyle);
+            window.setWindowAnimations(dialogOptions.getAnimStyle());
             window.setAttributes(lp);
         }
-        setCancelable(outCancel);
-        setTouchOutSideCancelable(touchCancel);
+        //设置是否点击外部不消失
+        setCancelable(dialogOptions.isOutCancel());
+        //设置是否点击屏幕区域不消失（点击返回键可消失）
+        setTouchOutSideCancelable();
+        setOnKeyListener();
     }
 
-    public BaseNiceDialog setMargin(int margin) {
-        this.margin = margin;
-        return this;
-    }
-
-    public BaseNiceDialog setWidth(int width) {
-        this.width = width;
-        return this;
-    }
-
-    public BaseNiceDialog setHeight(int height) {
-        this.height = height;
-        return this;
-    }
-
-    public BaseNiceDialog setDimAmount(float dimAmount) {
-        this.dimAmount = dimAmount;
-        return this;
-    }
-
-    public BaseNiceDialog setShowBottom(boolean showBottom) {
-        this.showBottom = showBottom;
-        return this;
-    }
-
-    public BaseNiceDialog setOutCancel(boolean outCancel) {
-        this.outCancel = outCancel;
-        return this;
-    }
-    
-    public BaseNiceDialog setTouchCancel(boolean touchCancel) {
-        this.touchCancel = touchCancel;
-        return this;
-    }
-    
-    public void setEnableDialogInterface(boolean enableDialogInterface) {
-        this.enableDialogInterface = enableDialogInterface;
-    }
-    
-    // *******
-    // 在调用show()之后，
-    // 再执行getSupportFragmentManager().executePendingTransactions()方法
-    // 才能调用此方法
-    public BaseNiceDialog setOnKeyEventListener(OnKeyListener listener) {
-        onKeyListener = listener;
-        getDialog().setOnKeyListener(listener);
-        return this;
-    }
-
-    public BaseNiceDialog setAnimStyle(@StyleRes int animStyle) {
-        this.animStyle = animStyle;
-        return this;
+    /**
+     * 重写按钮监听
+     */
+    private void setOnKeyListener() {
+        if (getFragmentManager() == null) {
+            return;
+        }
+        if (dialogOptions.getOnKeyListener() == null) {
+            return;
+        }
+        //boolean b = getFragmentManager().executePendingTransactions();
+        getDialog().setOnKeyListener(dialogOptions.getOnKeyListener());
     }
 
     public BaseNiceDialog show(FragmentManager manager) {
         super.show(manager, String.valueOf(System.currentTimeMillis()));
-        if (dialogInterface != null) {
-            if (enableDialogInterface){
-                dialogInterface.onDialogShow();
+        if (dialogOptions.getDialogInterface() != null) {
+            if (dialogOptions.isEnableDialogShowListener()) {
+                dialogOptions.getDialogInterface().onDialogShow();
             }
         }
         return this;
@@ -223,98 +204,25 @@ public abstract class BaseNiceDialog extends DialogFragment {
     @Override
     public void dismiss() {
         super.dismiss();
-        if (dialogInterface != null) {
-            if (enableDialogInterface) {
-                dialogInterface.onDialogDismiss();
-            }
+        if (dialogOptions.getDialogInterface() == null) {
+            return;
+        }
+        if (dialogOptions.isEnableDialogDismissListener()) {
+            dialogOptions.getDialogInterface().onDialogDismiss();
         }
     }
-    
-    public void setTouchOutSideCancelable(boolean touchCancel){
-        this.touchCancel = touchCancel;
-        getDialog().setCanceledOnTouchOutside(touchCancel);
+
+    public void setTouchOutSideCancelable() {
+        getDialog().setCanceledOnTouchOutside(dialogOptions.isTouchCancel());
     }
 
-    public BaseNiceDialog setOnDialogListener(DialogInterface dialogListener) {
-        dialogInterface = dialogListener;
+    public DialogOptions getDialogOptions() {
+        return dialogOptions;
+    }
+
+    public BaseNiceDialog setDialogOptions(DialogOptions dialogOptions) {
+        this.dialogOptions = dialogOptions;
         return this;
     }
 
-    public abstract static class DialogInterface implements Parcelable {
-
-        abstract public void onDialogShow();
-
-        abstract public void onDialogDismiss();
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-        }
-
-        public DialogInterface() {
-        }
-
-        protected DialogInterface(Parcel in) {
-        }
-
-        public final Creator<DialogInterface> CREATOR = new Creator<DialogInterface>() {
-            @Override
-            public DialogInterface createFromParcel(Parcel source) {
-                return new DialogInterface(source) {
-                    @Override
-                    public void onDialogShow() {
-
-                    }
-
-                    @Override
-                    public void onDialogDismiss() {
-
-                    }
-                };
-            }
-
-            @Override
-            public DialogInterface[] newArray(int size) {
-                return new DialogInterface[size];
-            }
-        };
-    }
-    public static abstract class OnKeyListener implements android.content.DialogInterface.OnKeyListener,Parcelable{
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-        }
-
-        public OnKeyListener() {
-        }
-
-        protected OnKeyListener(Parcel in) {
-        }
-
-        public final Creator<OnKeyListener> CREATOR = new Creator<OnKeyListener>() {
-            @Override
-            public OnKeyListener createFromParcel(Parcel source) {
-                return new OnKeyListener(source){
-                    @Override
-                    public boolean onKey(android.content.DialogInterface dialog, int keyCode, KeyEvent event) {
-                        return false;
-                    }
-                };
-            }
-
-            @Override
-            public OnKeyListener[] newArray(int size) {
-                return new OnKeyListener[size];
-            }
-        };
-    }
 }
