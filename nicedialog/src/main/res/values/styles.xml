@@ -96,10 +96,40 @@
         <item name="android:windowExitAnimation">@anim/scale_exit_anim</item>
     </style>
 
-    <!--有回弹的放大缩小淡入淡出-->
-    <style name="ScaleOverShootEnterExitAnimation" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/scale_alpha_overshoot_enter_anim</item>
-        <item name="android:windowExitAnimation">@anim/scale_alpha_overshoot_exit_anim</item>
+    <!--有回弹的放大缩小淡入淡出pivot=100%-->
+    <style name="ScaleOverShootEnterExitAnimation100" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/scale_alpha_overshoot_enter_anim_100</item>
+        <item name="android:windowExitAnimation">@anim/scale_alpha_overshoot_exit_anim_100</item>
+    </style>
+
+    <!--有回弹的放大缩小淡入淡出pivot=50%-->
+    <style name="ScaleOverShootEnterExitAnimation50" parent="android:Animation">
+        <item name="android:windowEnterAnimation">
+            @anim/scale_alpha_overshoot_enter_anim_for_full_screen_all_50
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/scale_alpha_overshoot_exit_anim_for_full_screen_all_50
+        </item>
+    </style>
+
+    <!--有回弹的放大缩小淡入淡出 pivotX=50%,pivotY=100%-->
+    <style name="ScaleOverShootEnterExitAnimationH50V100" parent="android:Animation">
+        <item name="android:windowEnterAnimation">
+            @anim/scale_alpha_overshoot_enter_anim_for_full_screen_horizontal_50
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/scale_alpha_overshoot_exit_anim_for_full_screen_horizontal_50
+        </item>
+    </style>
+
+    <!--有回弹的放大缩小淡入淡出 pivotX=100%,pivotY=50%-->
+    <style name="ScaleOverShootEnterExitAnimationH100V50" parent="android:Animation">
+        <item name="android:windowEnterAnimation">
+            @anim/scale_alpha_overshoot_enter_anim_for_full_screen_vertical_50
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/scale_alpha_overshoot_exit_anim_for_full_screen_vertical_50
+        </item>
     </style>
 
     <!--放大缩小淡入淡出-->

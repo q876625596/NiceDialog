@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StyleRes;
-import android.view.Gravity;
 
 /**
  * Created by Administrator on 2018/2/28.
@@ -16,6 +15,11 @@ public class DialogOptions implements Parcelable {
     private int width = 0;
     //高度dp
     private int height = 0;
+    //该库的scale动画分为中心点在50%和100%两种情况
+    //    如果遇到设置Scale动画时中心点偏移的情况，先检查xml布局中时候有横向纵向占满屏幕的view，
+    //    如果有，那么请设置对应的以下属性
+    //    如果没有那么请修改scale动画的中心点pivotX和pivotY，自行调整到合适的位置，、
+    //    因为在某些情况中心点位置会不同，目前我只找到一些可能性，但不全面，因此自定义修改scale动画的中心点是目前的最好解决方案
     //是否横向占满
     private boolean isFullHorizontal = false;
     //是否纵向占满

@@ -1,16 +1,10 @@
 package com.othershe.nicedialog;
 
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,48 +85,50 @@ public abstract class BaseNiceDialog extends DialogFragment {
             switch (dialogOptions.getGravity().getIndex()) {
                 //左上(默认动画从左至右加速减速,verticalMargin和horizontalMargin生效)
                 case Gravity.START | Gravity.TOP:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.LeftTransAlphaADAnimation : dialogOptions.getAnimStyle());
-                    break;
-                //中上(默认动画从上至下加速减速,verticalMargin生效)
-                case Gravity.CENTER_HORIZONTAL | Gravity.TOP:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.TopTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    //左中(默认动画从左至右加速减速,horizontalMargin生效)
+                case Gravity.START | Gravity.CENTER_VERTICAL:
+                    //左下(默认动画从左至右加速减速,verticalMargin和horizontalMargin生效)
+                case Gravity.START | Gravity.BOTTOM:
+                    if (dialogOptions.getAnimStyle() == 0) {
+                        dialogOptions.setAnimStyle(R.style.LeftTransAlphaADAnimation);
+                    }
                     break;
                 //右上(默认动画从右至左加速减速,verticalMargin和horizontalMargin生效)
                 case Gravity.END | Gravity.TOP:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.RightTransAlphaADAnimation : dialogOptions.getAnimStyle());
-                    break;
-                //左中(默认动画从左至右加速减速,horizontalMargin生效)
-                case Gravity.START | Gravity.CENTER_VERTICAL:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.LeftTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    //右中(默认动画从右至左加速减速,horizontalMargin生效)
+                case Gravity.END | Gravity.CENTER_VERTICAL:
+                    //右下(默认动画从右至左加速减速,verticalMargin和horizontalMargin生效)
+                case Gravity.END | Gravity.BOTTOM:
+                    if (dialogOptions.getAnimStyle() == 0) {
+                        dialogOptions.setAnimStyle(R.style.RightTransAlphaADAnimation);
+                    }
                     break;
                 //正中(默认动画有回弹的伸缩，margin无效)
                 case Gravity.CENTER:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.ScaleOverShootEnterExitAnimation : dialogOptions.getAnimStyle());
+                    if (dialogOptions.getAnimStyle() != 0) {
+                        break;
+                    }
+                    if (dialogOptions.isFullHorizontal() && dialogOptions.isFullVertical()) {
+                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimation50);
+                    } else if (dialogOptions.isFullHorizontal()) {
+                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimationH50V100);
+                    } else if (dialogOptions.isFullVertical()) {
+                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimationH100V50);
+                    } else {
+                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimation100);
+                    }
                     break;
-                //右中(默认动画从右至左加速减速,horizontalMargin生效)
-                case Gravity.END | Gravity.CENTER_VERTICAL:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.RightTransAlphaADAnimation : dialogOptions.getAnimStyle());
-                    break;
-                //左下(默认动画从左至右加速减速,verticalMargin和horizontalMargin生效)
-                case Gravity.START | Gravity.BOTTOM:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.LeftTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                //中上(默认动画从上至下加速减速,verticalMargin生效)
+                case Gravity.CENTER_HORIZONTAL | Gravity.TOP:
+                    if (dialogOptions.getAnimStyle() == 0) {
+                        dialogOptions.setAnimStyle(R.style.TopTransAlphaADAnimation);
+                    }
                     break;
                 //中下(默认动画从下至上加速减速,verticalMargin生效)
                 case Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.BottomTransAlphaADAnimation : dialogOptions.getAnimStyle());
-                    break;
-                //右下(默认动画从右至左加速减速,verticalMargin和horizontalMargin生效)
-                case Gravity.END | Gravity.BOTTOM:
-                    dialogOptions.setAnimStyle(dialogOptions.getAnimStyle() == 0
-                            ? R.style.RightTransAlphaADAnimation : dialogOptions.getAnimStyle());
+                    if (dialogOptions.getAnimStyle() == 0) {
+                        dialogOptions.setAnimStyle(R.style.BottomTransAlphaADAnimation);
+                    }
                     break;
                 //默认动画渐入渐出
                 default:

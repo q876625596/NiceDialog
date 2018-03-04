@@ -37,19 +37,24 @@ public class MainActivity extends AppCompatActivity {
                 */
         NiceDialog.init().setDialogOptions(new DialogOptions()//设置options
                 .setLayoutId(R.layout.share_layout)//
-                .setGravity(DialogGravity.LEFT_BOTTOM)
-                .setWidth(80)
-                .setHorizontalMargin(0.5f)
-                .setVerticalMargin(0.5f)
+                //.setGravity(DialogGravity.CENTER_BOTTOM)
+             /*   .setWidth(80)
+                .setHeight(100)*/
+             .setAnimStyle(R.style.ScaleOverShootEnterExitAnimationH50V100)
+               /* .setFullHorizontal(true)
+                .setFullVertical(true)*/
+                //.setHorizontalMargin(0.5f)
+                //.setVerticalMargin(0.5f)
                 .setConvertListener(new ViewConvertListener() {
                     @Override
                     protected void convertView(ViewHolder holder, BaseNiceDialog dialog) {
-                        holder.setOnClickListener(R.id.wechat, new View.OnClickListener() {
+
+                       /* holder.setOnClickListener(R.id.wechat, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Toast.makeText(MainActivity.this, "分享成功", Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        });*/
                     }
                 })
                 .setDialogInterface(new DialogInterface() {
@@ -88,12 +93,12 @@ public class MainActivity extends AppCompatActivity {
                 .setConvertListener(new ViewConvertListener() {
                     @Override
                     protected void convertView(ViewHolder holder, BaseNiceDialog dialog) {
-                        holder.setOnClickListener(R.id.wechat, new View.OnClickListener() {
+                       /* holder.setOnClickListener(R.id.wechat, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 Toast.makeText(MainActivity.this, "分享成功", Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        });*/
                     }
                 })
                 .setDialogInterface(new DialogInterface() {
