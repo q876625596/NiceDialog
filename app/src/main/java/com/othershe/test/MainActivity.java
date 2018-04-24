@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
                 //.setGravity(DialogGravity.CENTER_BOTTOM)
              /*   .setWidth(80)
                 .setHeight(100)*/
-             .setAnimStyle(R.style.ScaleOverShootEnterExitAnimationH50V100)
-               /* .setFullHorizontal(true)
-                .setFullVertical(true)*/
+                //.setAnimStyle(R.style.ScaleOverShootEnterExitAnimationH50V100)
+                //.setFullHorizontal(true)
+                //.setFullVertical(true)
                 //.setHorizontalMargin(0.5f)
                 //.setVerticalMargin(0.5f)
                 .setConvertListener(new ViewConvertListener() {
@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
                 .setOnKeyListener(new OnKeyListener() {
                     @Override
                     public boolean onKey(android.content.DialogInterface dialog, int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        /*if (keyCode == KeyEvent.KEYCODE_BACK) {
                             Toast.makeText(MainActivity.this, "back", Toast.LENGTH_SHORT).show();
                             return true;
-                        }
+                        }*/
                         return false;
                     }
                 }))

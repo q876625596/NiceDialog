@@ -98,37 +98,68 @@
 
     <!--有回弹的放大缩小淡入淡出pivot=100%-->
     <style name="ScaleOverShootEnterExitAnimation100" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/scale_alpha_overshoot_enter_anim_100</item>
-        <item name="android:windowExitAnimation">@anim/scale_alpha_overshoot_exit_anim_100</item>
+        <item name="android:windowEnterAnimation">
+            @anim/scale_alpha_overshoot_enter_anim_for_all_100
+        </item>
+        <item name="android:windowExitAnimation">@anim/scale_alpha_overshoot_exit_anim_for_all_100
+        </item>
     </style>
 
     <!--有回弹的放大缩小淡入淡出pivot=50%-->
     <style name="ScaleOverShootEnterExitAnimation50" parent="android:Animation">
         <item name="android:windowEnterAnimation">
-            @anim/scale_alpha_overshoot_enter_anim_for_full_screen_all_50
+            @anim/scale_alpha_overshoot_enter_anim_for_all_50
         </item>
-        <item name="android:windowExitAnimation">
-            @anim/scale_alpha_overshoot_exit_anim_for_full_screen_all_50
+        <item name="android:windowExitAnimation">@anim/scale_alpha_overshoot_exit_anim_for_all_50
         </item>
     </style>
 
     <!--有回弹的放大缩小淡入淡出 pivotX=50%,pivotY=100%-->
     <style name="ScaleOverShootEnterExitAnimationH50V100" parent="android:Animation">
         <item name="android:windowEnterAnimation">
-            @anim/scale_alpha_overshoot_enter_anim_for_full_screen_horizontal_50
+            @anim/scale_alpha_overshoot_enter_anim_for_x_50_y_100
         </item>
         <item name="android:windowExitAnimation">
-            @anim/scale_alpha_overshoot_exit_anim_for_full_screen_horizontal_50
+            @anim/scale_alpha_overshoot_exit_anim_for_x_50_y_100
         </item>
     </style>
 
     <!--有回弹的放大缩小淡入淡出 pivotX=100%,pivotY=50%-->
     <style name="ScaleOverShootEnterExitAnimationH100V50" parent="android:Animation">
         <item name="android:windowEnterAnimation">
-            @anim/scale_alpha_overshoot_enter_anim_for_full_screen_vertical_50
+            @anim/scale_alpha_overshoot_enter_anim_for_x_100_y_50
         </item>
         <item name="android:windowExitAnimation">
-            @anim/scale_alpha_overshoot_exit_anim_for_full_screen_vertical_50
+            @anim/scale_alpha_overshoot_exit_anim_for_x_100_y_50
+        </item>
+    </style>
+
+    <!--有回弹的放大缩小淡入淡出 pivotX=100%,pivotY=75%-->
+    <style name="ScaleOverShootEnterExitAnimationH100V75" parent="android:Animation">
+        <item name="android:windowEnterAnimation">
+            @anim/scale_alpha_overshoot_enter_anim_for_x_100_y_75
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/scale_alpha_overshoot_exit_anim_for_x_100_y_75
+        </item>
+    </style>
+
+    <!--有回弹的放大缩小淡入淡出 pivotX=75%,pivotY=100%-->
+    <style name="ScaleOverShootEnterExitAnimationH75V100" parent="android:Animation">
+        <item name="android:windowEnterAnimation">
+            @anim/scale_alpha_overshoot_enter_anim_for_x_75_y_100
+        </item>
+        <item name="android:windowExitAnimation">
+            @anim/scale_alpha_overshoot_exit_anim_for_x_75_y_100
+        </item>
+    </style>
+
+    <!--有回弹的放大缩小淡入淡出 pivotX=75%,pivotY=75%-->
+    <style name="ScaleOverShootEnterExitAnimation75" parent="android:Animation">
+        <item name="android:windowEnterAnimation">
+            @anim/scale_alpha_overshoot_enter_anim_for_all_75
+        </item>
+        <item name="android:windowExitAnimation">@anim/scale_alpha_overshoot_exit_anim_for_all_75
         </item>
     </style>
 

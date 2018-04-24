@@ -1,9 +1,11 @@
 package com.othershe.nicedialog;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public abstract class BaseNiceDialog extends DialogFragment {
+
+    private AppCompatActivity mActivity;
 
     //保存数据的标签
     private static final String OPTIONS = "options";
@@ -22,6 +26,7 @@ public abstract class BaseNiceDialog extends DialogFragment {
     //事件监听
     public abstract void convertView(ViewHolder holder, BaseNiceDialog dialog);
 
+    public abstract int getLayout();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,10 +40,19 @@ public abstract class BaseNiceDialog extends DialogFragment {
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mActivity = (AppCompatActivity) context;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //加载布局
+        if (getLayout() != 0) {
+            dialogOptions.setLayoutId(getLayout());
+        }
         View view = inflater.inflate(dialogOptions.getLayoutId(), container, false);
         convertView(ViewHolder.create(view), this);
         return view;
@@ -60,6 +74,11 @@ public abstract class BaseNiceDialog extends DialogFragment {
             }
         }
         super.onStop();
+    }
+
+
+    public AppCompatActivity getmActivity() {
+        return mActivity;
     }
 
     /**
@@ -103,19 +122,10 @@ public abstract class BaseNiceDialog extends DialogFragment {
                         dialogOptions.setAnimStyle(R.style.RightTransAlphaADAnimation);
                     }
                     break;
-                //正中(默认动画有回弹的伸缩，margin无效)
+                //正中(默认动画渐入渐出)
                 case Gravity.CENTER:
-                    if (dialogOptions.getAnimStyle() != 0) {
-                        break;
-                    }
-                    if (dialogOptions.isFullHorizontal() && dialogOptions.isFullVertical()) {
-                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimation50);
-                    } else if (dialogOptions.isFullHorizontal()) {
-                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimationH50V100);
-                    } else if (dialogOptions.isFullVertical()) {
-                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimationH100V50);
-                    } else {
-                        dialogOptions.setAnimStyle(R.style.ScaleOverShootEnterExitAnimation100);
+                    if (dialogOptions.getAnimStyle() == 0) {
+                        dialogOptions.setAnimStyle(R.style.AlphaEnterExitAnimation);
                     }
                     break;
                 //中上(默认动画从上至下加速减速,verticalMargin生效)
