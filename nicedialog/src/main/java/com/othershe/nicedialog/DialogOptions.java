@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StyleRes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -208,6 +209,9 @@ public class DialogOptions implements Parcelable {
     }
 
     public DialogOptions addDialogInterface(DialogInterface dialogInterface) {
+        if (dialogInterfaces == null) {
+            dialogInterfaces = new ArrayList<>();
+        }
         this.dialogInterfaces.add(dialogInterface);
         return this;
     }
