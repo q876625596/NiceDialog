@@ -1,6 +1,7 @@
 package com.othershe.test;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
                 .setWidth(50)
                 .setHeight(50)
                 */
+        View decorView = getWindow().getDecorView();
+        int option;
+        option = View.INVISIBLE;
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        decorView.setSystemUiVisibility(option);
+        ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setFitsSystemWindows(false);
         NiceDialog.init().setDialogOptions(new DialogOptions()//设置options
                 .setLayoutId(R.layout.share_layout)//
                 //.setGravity(DialogGravity.CENTER_BOTTOM)
@@ -67,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onDialogDismiss() {
                         Log.e("ly", "dismiss");
                     }
+
                 })
                 .setOnKeyListener(new OnKeyListener() {
                     @Override

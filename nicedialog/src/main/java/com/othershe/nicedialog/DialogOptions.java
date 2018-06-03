@@ -5,6 +5,8 @@ import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StyleRes;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2018/2/28.
  */
@@ -56,7 +58,7 @@ public class DialogOptions implements Parcelable {
     private boolean enableDialogDismissListener = true;
 
     //显示与消失的监听
-    private DialogInterface dialogInterface;
+    private List<DialogInterface> dialogInterfaces;
     //按钮监听
     private OnKeyListener onKeyListener;
     //事件监听
@@ -196,12 +198,17 @@ public class DialogOptions implements Parcelable {
         return this;
     }
 
-    public DialogInterface getDialogInterface() {
-        return dialogInterface;
+    public List<DialogInterface> getDialogInterface() {
+        return dialogInterfaces;
     }
 
     public DialogOptions setDialogInterface(DialogInterface dialogInterface) {
-        this.dialogInterface = dialogInterface;
+        this.dialogInterfaces.set(0, dialogInterface);
+        return this;
+    }
+
+    public DialogOptions addDialogInterface(DialogInterface dialogInterface) {
+        this.dialogInterfaces.add(dialogInterface);
         return this;
     }
 
@@ -262,7 +269,7 @@ public class DialogOptions implements Parcelable {
         dest.writeByte(this.touchCancel ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enableDialogShowListener ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enableDialogDismissListener ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.dialogInterface, flags);
+        dest.writeTypedList(this.dialogInterfaces);
         dest.writeParcelable(this.onKeyListener, flags);
         dest.writeParcelable(this.convertListener, flags);
         dest.writeInt(this.animStyle);
@@ -288,14 +295,14 @@ public class DialogOptions implements Parcelable {
         this.touchCancel = in.readByte() != 0;
         this.enableDialogShowListener = in.readByte() != 0;
         this.enableDialogDismissListener = in.readByte() != 0;
-        this.dialogInterface = in.readParcelable(DialogInterface.class.getClassLoader());
+        this.dialogInterfaces = in.createTypedArrayList(DialogInterface.CREATOR);
         this.onKeyListener = in.readParcelable(OnKeyListener.class.getClassLoader());
         this.convertListener = in.readParcelable(ViewConvertListener.class.getClassLoader());
         this.animStyle = in.readInt();
         this.layoutId = in.readInt();
     }
 
-    public static final Parcelable.Creator<DialogOptions> CREATOR = new Parcelable.Creator<DialogOptions>() {
+    public static final Creator<DialogOptions> CREATOR = new Creator<DialogOptions>() {
         @Override
         public DialogOptions createFromParcel(Parcel source) {
             return new DialogOptions(source);

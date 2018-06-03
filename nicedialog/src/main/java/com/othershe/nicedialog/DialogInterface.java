@@ -13,6 +13,14 @@ public abstract class DialogInterface implements Parcelable {
 
     abstract public void onDialogDismiss();
 
+    public boolean isEnableDialogShowListener(){
+        return true;
+    }
+
+    public boolean isEnableDialogDismissListener(){
+        return true;
+    }
+
     @Override
     public int describeContents() {
         return 0;
