@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
+import java.util.Iterator;
+import java.util.Map;
+
 public abstract class BaseNiceDialog extends DialogFragment {
 
     private AppCompatActivity mActivity;
@@ -67,12 +70,10 @@ public abstract class BaseNiceDialog extends DialogFragment {
 
     @Override
     public void onStop() {
-        if (dialogOptions.getDialogInterface() != null) {
-            for (DialogInterface d :
-                    dialogOptions.getDialogInterface()) {
-                //判断是否需要调用关闭dialog的回调
-                if (d.isEnableDialogDismissListener()) {
-                    d.onDialogDismiss();
+        if (dialogOptions.getShowDismissMap() != null) {
+            for (Map.Entry<String, DialogInterface> entry : dialogOptions.getShowDismissMap().entrySet()) {
+                if (entry.getValue().isEnableDialogDismissListener()) {
+                    entry.getValue().onDialogDismiss();
                 }
             }
         }
@@ -207,10 +208,9 @@ public abstract class BaseNiceDialog extends DialogFragment {
 
     public BaseNiceDialog show(FragmentManager manager) {
         super.show(manager, String.valueOf(System.currentTimeMillis()));
-        for (DialogInterface d :
-                dialogOptions.getDialogInterface()) {
-            if (d.isEnableDialogShowListener()) {
-                d.onDialogShow();
+        for (Map.Entry<String, DialogInterface> entry : dialogOptions.getShowDismissMap().entrySet()) {
+            if (entry.getValue().isEnableDialogShowListener()){
+                entry.getValue().onDialogShow();
             }
         }
         return this;
@@ -219,13 +219,12 @@ public abstract class BaseNiceDialog extends DialogFragment {
     @Override
     public void dismiss() {
         super.dismiss();
-        if (dialogOptions.getDialogInterface() == null) {
+        if (dialogOptions.getShowDismissMap() == null) {
             return;
         }
-        for (DialogInterface d :
-                dialogOptions.getDialogInterface()) {
-            if (d.isEnableDialogDismissListener()) {
-                d.onDialogDismiss();
+        for (Map.Entry<String, DialogInterface> entry : dialogOptions.getShowDismissMap().entrySet()) {
+            if (entry.getValue().isEnableDialogDismissListener()) {
+                entry.getValue().onDialogDismiss();
             }
         }
     }

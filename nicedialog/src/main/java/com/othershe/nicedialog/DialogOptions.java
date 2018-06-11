@@ -5,8 +5,8 @@ import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.StyleRes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/2/28.
@@ -59,7 +59,7 @@ public class DialogOptions implements Parcelable {
     private boolean enableDialogDismissListener = true;
 
     //显示与消失的监听
-    private List<DialogInterface> dialogInterfaces;
+    private Map<String, DialogInterface> showDismissMap;
     //按钮监听
     private OnKeyListener onKeyListener;
     //事件监听
@@ -199,20 +199,16 @@ public class DialogOptions implements Parcelable {
         return this;
     }
 
-    public List<DialogInterface> getDialogInterface() {
-        return dialogInterfaces;
+    public Map<String,DialogInterface> getShowDismissMap() {
+        return showDismissMap;
     }
 
-    public DialogOptions setDialogInterface(DialogInterface dialogInterface) {
-        this.dialogInterfaces.set(0, dialogInterface);
-        return this;
-    }
 
-    public DialogOptions addDialogInterface(DialogInterface dialogInterface) {
-        if (dialogInterfaces == null) {
-            dialogInterfaces = new ArrayList<>();
+    public DialogOptions addShowDisMissListener(String key, DialogInterface dialogInterface) {
+        if (showDismissMap == null) {
+            showDismissMap = new HashMap<>();
         }
-        this.dialogInterfaces.add(dialogInterface);
+        this.showDismissMap.put(key,dialogInterface);
         return this;
     }
 
@@ -252,6 +248,7 @@ public class DialogOptions implements Parcelable {
         return this;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -273,7 +270,11 @@ public class DialogOptions implements Parcelable {
         dest.writeByte(this.touchCancel ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enableDialogShowListener ? (byte) 1 : (byte) 0);
         dest.writeByte(this.enableDialogDismissListener ? (byte) 1 : (byte) 0);
-        dest.writeTypedList(this.dialogInterfaces);
+        dest.writeInt(this.showDismissMap.size());
+        for (Map.Entry<String, DialogInterface> entry : this.showDismissMap.entrySet()) {
+            dest.writeString(entry.getKey());
+            dest.writeParcelable(entry.getValue(), flags);
+        }
         dest.writeParcelable(this.onKeyListener, flags);
         dest.writeParcelable(this.convertListener, flags);
         dest.writeInt(this.animStyle);
@@ -299,7 +300,13 @@ public class DialogOptions implements Parcelable {
         this.touchCancel = in.readByte() != 0;
         this.enableDialogShowListener = in.readByte() != 0;
         this.enableDialogDismissListener = in.readByte() != 0;
-        this.dialogInterfaces = in.createTypedArrayList(DialogInterface.CREATOR);
+        int showDismissMapSize = in.readInt();
+        this.showDismissMap = new HashMap<String, DialogInterface>(showDismissMapSize);
+        for (int i = 0; i < showDismissMapSize; i++) {
+            String key = in.readString();
+            DialogInterface value = in.readParcelable(DialogInterface.class.getClassLoader());
+            this.showDismissMap.put(key, value);
+        }
         this.onKeyListener = in.readParcelable(OnKeyListener.class.getClassLoader());
         this.convertListener = in.readParcelable(ViewConvertListener.class.getClassLoader());
         this.animStyle = in.readInt();
