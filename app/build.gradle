@@ -20,7 +20,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':nicedialog')
-    compile 'com.android.support:appcompat-v7:27.0.2'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':nicedialog')
+    implementation 'com.android.support:appcompat-v7:27.0.2'
 }

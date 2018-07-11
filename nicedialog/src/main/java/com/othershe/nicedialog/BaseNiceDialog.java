@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.util.Iterator;
 import java.util.Map;
 
 public abstract class BaseNiceDialog extends DialogFragment {
@@ -208,8 +207,11 @@ public abstract class BaseNiceDialog extends DialogFragment {
 
     public BaseNiceDialog show(FragmentManager manager) {
         super.show(manager, String.valueOf(System.currentTimeMillis()));
+        if (dialogOptions.getShowDismissMap() == null) {
+            return this;
+        }
         for (Map.Entry<String, DialogInterface> entry : dialogOptions.getShowDismissMap().entrySet()) {
-            if (entry.getValue().isEnableDialogShowListener()){
+            if (entry.getValue().isEnableDialogShowListener()) {
                 entry.getValue().onDialogShow();
             }
         }

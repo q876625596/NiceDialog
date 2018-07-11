@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         View decorView = getWindow().getDecorView();
         int option;
         option = View.INVISIBLE;
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        //getWindow().setStatusBarColor(Color.TRANSPARENT);
         decorView.setSystemUiVisibility(option);
         ((ViewGroup) findViewById(android.R.id.content)).getChildAt(0).setFitsSystemWindows(false);
         NiceDialog.init().setDialogOptions(new DialogOptions()//设置options
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                 //.setFullVertical(true)
                 //.setHorizontalMargin(0.5f)
                 //.setVerticalMargin(0.5f)
+                .setTouchCancel(false)
                 .setConvertListener(new ViewConvertListener() {
                     @Override
                     protected void convertView(ViewHolder holder, BaseNiceDialog dialog) {
@@ -64,18 +65,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });*/
                     }
-                })
-                .setDialogInterface(new DialogInterface() {
-                    @Override
-                    public void onDialogShow() {
-                        Log.e("ly", "show");
-                    }
-
-                    @Override
-                    public void onDialogDismiss() {
-                        Log.e("ly", "dismiss");
-                    }
-
                 })
                 .setOnKeyListener(new OnKeyListener() {
                     @Override
@@ -95,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 .setLayoutId(R.layout.share_layout)//
                 .setGravity(DialogGravity.CENTER_CENTER)
                 .setWidth(80)
+                .setTouchCancel(false)
                 .setFullVertical(true)
                 .setFullHorizontal(true)
                 .setFullHorizontalMargin(10)
@@ -108,17 +98,6 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, "分享成功", Toast.LENGTH_SHORT).show();
                             }
                         });*/
-                    }
-                })
-                .setDialogInterface(new DialogInterface() {
-                    @Override
-                    public void onDialogShow() {
-                        Log.e("ly", "show");
-                    }
-
-                    @Override
-                    public void onDialogDismiss() {
-                        Log.e("ly", "dismiss");
                     }
                 })
                 .setOnKeyListener(new OnKeyListener() {
